@@ -69,7 +69,7 @@ module BabySqueel
       #
       # See: https://github.com/rails/rails/pull/27994
       def reconstruct_with_type_caster(table, associations)
-        return table if ::ActiveRecord::VERSION::MAJOR < 5 || ::ActiveRecord::VERSION::MAJOR >=6
+        return table if ::ActiveRecord::VERSION::MAJOR < 5
         type_caster = associations.last._scope.type_caster
         ::Arel::Table.new(table.name, type_caster: type_caster)
       end
