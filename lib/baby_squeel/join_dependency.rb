@@ -35,8 +35,10 @@ module BabySqueel
       # a list (in order of chaining) of associations and finding
       # the respective JoinAssociation at each level.
       def find_alias(associations)
-        table = find_join_association(associations).table
-        reconstruct_with_type_caster(table, associations)
+        join_association = find_join_association(associations)
+        table = join_association.table
+        tablename = join_association.reflection.plural_name
+        reconstruct_with_type_caster(table, tablename, associations)
       end
 
       private
@@ -68,10 +70,10 @@ module BabySqueel
       # with the type_caster belonging to the wrong model.
       #
       # See: https://github.com/rails/rails/pull/27994
-      def reconstruct_with_type_caster(table, associations)
+      def reconstruct_with_type_caster(table, tablename, associations)
         return table if ::ActiveRecord::VERSION::MAJOR < 5
         type_caster = associations.last._scope.type_caster
-        ::Arel::Table.new(table.name, type_caster: type_caster)
+        ::Arel::Table.new(tablename, type_caster: type_caster)
       end
     end
   end
